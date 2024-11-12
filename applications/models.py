@@ -14,7 +14,7 @@ class Application(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
+    job_title = models.CharField(max_length=100)
     company = models.CharField(max_length=30)
     location = models.CharField(max_length=50, blank=True )
     details = models.TextField(blank=True)
