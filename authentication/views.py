@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import LoginForm, RegisterForm
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def register_user(request):
@@ -32,7 +33,7 @@ def login_user(request):
     else:
         form = LoginForm()
         return render(request, 'authentication/login.html', {'login_form': form})
-    
+@login_required(login_url="/auth/login/")
 def logout_user(request):
     logout(request)
     return redirect('/authentication/login')
