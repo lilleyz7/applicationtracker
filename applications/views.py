@@ -15,14 +15,14 @@ def create_application_view(request):
             try:
                 app.user = request.user
                 app.save()
-                return redirect('/all')
+                return redirect('../../apps/all/')
             except Exception as e:
                 form = ApplicationForm()
-                return render(request, 'applications/add_application.html', {'error_message': e, 'application_form': form})
-        return render(request, 'applications/add_application.html', {'error_message': "invalid form", 'application_form': form})
+                return render(request, 'applications/add_application.html', {'error_message': e, 'add_app_form': form})
+        return render(request, 'applications/add_application.html', {'error_message': "invalid form", 'add_app_form': form})
     else:
         form = ApplicationForm()
-        return render(request, 'applications/add_application.html', {'application_form': form})
+        return render(request, 'applications/add_application.html', {'add_app_form': form})
 # view all apps
 @login_required(login_url=LOGIN_URL)
 def all_applications_view(request):

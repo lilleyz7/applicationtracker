@@ -1,10 +1,10 @@
 from django import forms
 from .models import Application
 
-class ApplicationForm(forms.Form):
+class ApplicationForm(forms.ModelForm):
     class Meta:
         model = Application
-        fields = ['job_title', 'company', 'added', 'details', 'location', 'deadline', 'status']
+        fields = ['job_title', 'company', 'details', 'location', 'deadline', 'status']
         widgets = {
             'applied_date': forms.DateInput(attrs={'type': 'date'}),
             'deadline': forms.DateInput(attrs={'type': 'date'}),

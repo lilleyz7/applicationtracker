@@ -23,4 +23,4 @@ class Application(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='interested')
 
     def __str__(self):
-        return f"{self.title} for {self.company} in {self.location}"
+        return f"{self.job_title} for {self.company} in {self.location}"

@@ -26,15 +26,11 @@ def login_user(request):
        if form.is_valid():
             email=form.cleaned_data['email']
             password=form.cleaned_data['password']
-            print(email)
-            print(password)
             user = authenticate(email=email, password=password)
             if user:
                 login(request, user)
-                print("here")
                 return redirect('/apps/all')
             else:
-                print("this")
                 return render(request, 'authentication/login.html', {'login_form': form, 'error_message': 'Incorrect password'})
     else:
         form = LoginForm()
