@@ -17,7 +17,7 @@ class Application(models.Model):
     job_title = models.CharField(max_length=100)
     company = models.CharField(max_length=30)
     location = models.CharField(max_length=50, blank=True )
-    details = models.TextField(blank=True)
+    listing = models.URLField(blank=True)
     added = models.DateTimeField(auto_now_add=True)
     deadline = models.DateTimeField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='interested')
