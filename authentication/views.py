@@ -29,7 +29,7 @@ def login_user(request):
             user = authenticate(email=email, password=password)
             if user:
                 login(request, user)
-                return redirect('/apps/all')
+                return redirect('/app/all')
             else:
                 return render(request, 'authentication/login.html', {'login_form': form, 'error_message': 'Incorrect password'})
     else:

@@ -6,6 +6,13 @@
     <title>{% block title %}{% endblock title %}</title>
 </head>
 <body>
+    <nav>
+        <ul>
+            <li><a href="{% url 'create_application' %}">New Application</a></li>
+            <li><a href="{% url 'all_applications' %}">Your Applications</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+        </ul>
+    </nav>
     {% block error_message %}{% endblock error_message %}
     
     {% block content %}

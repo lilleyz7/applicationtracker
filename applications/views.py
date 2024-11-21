@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import ApplicationForm
@@ -15,7 +16,7 @@ def create_application_view(request):
             try:
                 app.user = request.user
                 app.save()
-                return redirect('../../apps/all/')
+                return redirect('../../app/all/')
             except Exception as e:
                 form = ApplicationForm()
                 return render(request, 'applications/add_application.html', {'error_message': e, 'add_app_form': form})
@@ -44,7 +45,7 @@ def delete_application_view(request, app_id):
     try:
         app = Application.objects.filter(user=user, id=app_id)
         app.delete()
-        return 
+        return redirect("/app/all/")
     except Exception as e:
         return render(request, 'applications/all_applications.html', {'error_message': e})
 # update application
