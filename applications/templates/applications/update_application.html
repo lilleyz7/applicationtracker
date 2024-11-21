@@ -1,0 +1,16 @@
+{% extends "applications/base.html" %}
+{% block title %}Update Application{% endblock title %}
+{% block content %}
+  <h2>Update Job Application</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    {% if app %}
+    <form action="{% url 'update_application' app.id %}" method="post" style="display:inline;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+      </form>
+      {% endif %}
+    <a href="{% url 'all_applications' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+{% endblock %} 
