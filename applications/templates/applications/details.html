@@ -1,0 +1,20 @@
+{% extends "applications/base.html" %}
+
+{% block title %}Details{% endblock title %}
+
+{% block error_message %}
+{% if error_message %}
+    <h1>{{ error_message }}</h1>
+{% endif %}{% endblock error_message %}
+
+{% block content %}
+{% if application %}
+    <h3>Title: {{ application.job_title }}</h3>
+    <h3>Company: {{ application.company }}</h3>
+    <h3>Location: {{ application.location }}</h3>
+    <h3>Listing: {{ application.listing }}</h3>
+    <h3>Added: {{ application.added }}</h3>
+    <h3>Deadline: {{ application.deadline }}</h3>
+    <h3>Status: {{ application.status }}</h3>
+{% endif %}
+{% endblock content %}

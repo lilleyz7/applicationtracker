@@ -4,7 +4,7 @@
 {% block content %}
 <h1>Your Saved Applications</h1>
 {% for app in applications %}
-    <h1>{{ app.job_title }}</h1>
+    <a href="{% url 'application_details' app.id %}"><h1>{{ app.job_title }}</h1></a>
     <form method="post" action="{% url 'delete_application' app.id%}">
         {% csrf_token %}
         <button type="submit">Delete</button>

@@ -35,10 +35,12 @@ def all_applications_view(request):
     except Exception as e:
         return render(request, 'applications/all_applications.html', {'error_message': e})
 
-# @login_required(login_url=LOGIN_URL)
-# def detail_view(request, app_data):
-#     user = request.user
-#     app = Application.objects.filter(user=user, id=)
+@login_required(login_url=LOGIN_URL)
+def detail_view(request, app_id):
+    user = request.user
+    app = Application.objects.filter(user=user, id=app_id).first()
+    print(app.job_title)
+    return render(request, 'applications/details.html', {'application': app})
 
 @login_required(login_url=LOGIN_URL)
 def delete_application_view(request, app_id):
