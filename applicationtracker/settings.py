@@ -53,6 +53,30 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://default:KmSjGPgugeHZZtbfGsFBDecOzSNIVhaI@junction.proxy.rlwy.net:11442",
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    },
+    'redis': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        "LOCATION": "redis://default:KmSjGPgugeHZZtbfGsFBDecOzSNIVhaI@junction.proxy.rlwy.net:11442",
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+# Use the Redis cache as the default cache
+CACHES['default'] = CACHES['redis']
+
 ROOT_URLCONF = 'applicationtracker.urls'
 
 TEMPLATES = [
