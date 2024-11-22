@@ -3,9 +3,13 @@ from django.contrib.auth.decorators import login_required
 from .forms import ApplicationForm
 from .models import Application
 from django.core.cache import cache
+from django_ratelimit.decorators import ratelimit
 
 # Create your views here.
 LOGIN_URL = "/auth/login/"
+
+@ratelimit(key="ip", rate='5/m')
+@ratelimit(key="ip", rate='100/h')
 @login_required(login_url=LOGIN_URL)
 def create_application_view(request):
     if request.method == 'POST':
@@ -24,6 +28,9 @@ def create_application_view(request):
     else:
         form = ApplicationForm()
         return render(request, 'applications/add_application.html', {'add_app_form': form})
+
+@ratelimit(key="ip", rate='5/m')
+@ratelimit(key="ip", rate='100/h')
 @login_required(login_url=LOGIN_URL)
 def all_applications_view(request):
     user = request.user
@@ -37,13 +44,14 @@ def all_applications_view(request):
     except Exception as e:
         return render(request, 'applications/all_applications.html', {'error_message': e})
 
+@ratelimit(key="ip", rate='20/m')
 @login_required(login_url=LOGIN_URL)
 def detail_view(request, app_id):
     user = request.user
     app = cache.get(f'Details_{app_id}')
     if not app:
         app = Application.objects.filter(user=user, id=app_id).first()
-        cache.set(f'Details_{app_id}', app, 60 * 20)  # Cache for 20 minutes if not found in cache.
+        cache.set(f'Details_{app_id}', app, 60 * 20) 
         print(f'Set cache for application {app_id}')
     return render(request, 'applications/details.html', {'application': app})
 
@@ -54,7 +62,7 @@ def delete_application_view(request, app_id):
         app = Application.objects.filter(user=user, id=app_id)
         app.delete()
         cache.delete(f'Details_{app_id}')
-        cache.delete(f'Apps_{user.id}')  # Delete cache for all applications when a single application is deleted.
+        cache.delete(f'Apps_{user.id}')  
         print(f'Delete cache for application {app_id}')
         return redirect("/app/all/")
     except Exception as e:
