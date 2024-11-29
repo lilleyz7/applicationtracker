@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -20,12 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-f1h7k*77w$)weaq&o2qyw2=iceymd($uf3iov3h3o7ns=sw67_'
+SECRET_KEY = os.environ("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if os.environ("DJANGO_ENV") == "production":
+    DEBUG = False
+else:
+    DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -45,6 +48,7 @@ AUTH_USER_MODEL = "authentication.CustomUser"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -53,29 +57,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://default:KmSjGPgugeHZZtbfGsFBDecOzSNIVhaI@junction.proxy.rlwy.net:11442",
-    }
-}
-
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-        'LOCATION': 'my_cache_table',
-    },
-    'redis': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        "LOCATION": "redis://default:KmSjGPgugeHZZtbfGsFBDecOzSNIVhaI@junction.proxy.rlwy.net:11442",
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        }
-    }
-}
-
-# Use the Redis cache as the default cache
-CACHES['default'] = CACHES['redis']
 
 ROOT_URLCONF = 'applicationtracker.urls'
 
@@ -101,12 +82,52 @@ WSGI_APPLICATION = 'applicationtracker.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
+current_env = os.environ("DJANGO_ENV") or "development"
+print(current_env)
+
+if current_env == "production":
+    DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.environ('DATABASE_NAME'),
+        'USER': os.environ('DATABASE_USER'),
+        'PASSWORD': os.environ('DATABASE_PASSWORD'),
+        'HOST': os.environ('DATABASE_HOST'),
+        'PORT': '5432',
     }
 }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://default:KmSjGPgugeHZZtbfGsFBDecOzSNIVhaI@junction.proxy.rlwy.net:11442",
+    }
+}
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    },
+    'redis': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        "LOCATION": "redis://default:KmSjGPgugeHZZtbfGsFBDecOzSNIVhaI@junction.proxy.rlwy.net:11442",
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+# Use the Redis cache as the default cache
+CACHES['default'] = CACHES['redis']
 
 
 # Password validation
@@ -144,6 +165,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

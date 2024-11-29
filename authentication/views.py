@@ -23,7 +23,7 @@ def register_user(request):
         return render(request,'authentication/register.html', {'register_form': form})
 
 def login_user(request):
-    if request.user:
+    if request.user.is_authenticated:
         return redirect('/app/all')
     if request.method == 'POST':
        form = LoginForm(request.POST)

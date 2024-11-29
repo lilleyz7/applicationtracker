@@ -8,7 +8,7 @@ from django_ratelimit.decorators import ratelimit
 # Create your views here.
 LOGIN_URL = "/auth/login/"
 
-@ratelimit(key="ip", rate='5/m')
+@ratelimit(key="ip", rate='10/m')
 @ratelimit(key="ip", rate='100/h')
 @login_required(login_url=LOGIN_URL)
 def create_application_view(request):
@@ -29,20 +29,21 @@ def create_application_view(request):
         form = ApplicationForm()
         return render(request, 'applications/add_application.html', {'add_app_form': form})
 
-@ratelimit(key="ip", rate='5/m')
+@ratelimit(key="ip", rate='10/m')
 @ratelimit(key="ip", rate='100/h')
 @login_required(login_url=LOGIN_URL)
 def all_applications_view(request):
-    user = request.user
-    try:
-        applications = cache.get(f'Apps_{user.id}')
-        if not applications:
-            applications = Application.objects.filter(user=user)
-            cache.set(f'Apps_{user.id}', applications, 60 * 20) 
-            print(f'Set cache for application {user.id}')
-        return render(request, 'applications/all_applications.html', {'applications': applications})
-    except Exception as e:
-        return render(request, 'applications/all_applications.html', {'error_message': e})
+    if request.method == "GET":
+        user = request.user
+        try:
+            applications = cache.get(f'Apps_{user.id}')
+            if not applications:
+                applications = Application.objects.filter(user=user)
+                cache.set(f'Apps_{user.id}', applications, 60 * 20) 
+                print(f'Set cache for application {user.id}')
+            return render(request, 'applications/all_applications.html', {'applications': applications})
+        except Exception as e:
+            return render(request, 'applications/all_applications.html', {'error_message': e})
 
 @ratelimit(key="ip", rate='20/m')
 @login_required(login_url=LOGIN_URL)
